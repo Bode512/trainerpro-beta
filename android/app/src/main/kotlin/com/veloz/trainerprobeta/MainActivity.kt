@@ -1,4 +1,4 @@
-package com.veloz.trainerpro
+package com.veloz.trainerprobeta
 
 import io.flutter.embedding.android.FlutterActivity
 
