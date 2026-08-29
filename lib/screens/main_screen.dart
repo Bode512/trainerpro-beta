@@ -15,12 +15,9 @@ import '../widgets/plate_calculator_dialog.dart';
 import '../widgets/animated_widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:permission_handler/permission_handler.dart';
-import 'auth_screen.dart';
 
 class MainScreen extends StatefulWidget {
   final AppTheme currentTheme;
@@ -296,8 +293,6 @@ class _MainScreenState extends State<MainScreen>
     _checkPersistentTimer();
     _loadChatHistory();
     _loadDraft(); // Restaura el entrenamiento en curso si la app se cerró
-    _loadDataFromFirestore();
-    _retryPendingSync();
   }
 
   @override
@@ -322,7 +317,6 @@ class _MainScreenState extends State<MainScreen>
       }
     } else if (state == AppLifecycleState.resumed) {
       _checkPersistentTimer();
-      _retryPendingSync();
     }
   }
 
@@ -2888,12 +2882,19 @@ class _MainScreenState extends State<MainScreen>
         const SizedBox(height: 28),
         AppleComponents.sectionHeader('CUENTA', _palette),
         Container(
-          padding: const EdgeInsets.all(AppleDesignSystem.spacing4),
+          padding: const EdgeInsets.all(AppleDesignSystem.spacing20),
           decoration: AppleComponents.card(
             palette: _palette,
             radius: AppleDesignSystem.radiusXL,
           ),
-          child: _buildAuthSection(),
+          child: Center(
+            child: Text(
+              "Firebase eliminado - funcionalidad local únicamente",
+              style: AppleDesignSystem.caption1.copyWith(
+                color: _palette.textTertiary,
+              ),
+            ),
+          ),
         ),
 
         const SizedBox(height: 28),
@@ -2907,246 +2908,6 @@ class _MainScreenState extends State<MainScreen>
         const SizedBox(height: 40),
       ],
     );
-  }
-
-  Widget _buildAuthSection() {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      return Column(
-        children: [
-          ListTile(
-            leading: CircleAvatar(
-              backgroundColor: _accentColor.withValues(alpha: 0.15),
-              child: Text(
-                (user.displayName ?? user.email ?? 'U')[0].toUpperCase(),
-                style: AppleDesignSystem.subheadline.copyWith(
-                  color: _accentColor,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            title: Text(
-              user.displayName ?? user.email ?? 'Usuario',
-              style: AppleDesignSystem.subheadline.copyWith(
-                color: _palette.textPrimary,
-              ),
-            ),
-            subtitle: Text(
-              user.email ?? '',
-              style: AppleDesignSystem.caption1.copyWith(
-                color: _palette.textTertiary,
-              ),
-            ),
-          ),
-          AppleComponents.separator(palette: _palette),
-          ListTile(
-            leading: Icon(LucideIcons.cloud, color: _accentColor, size: 18),
-            title: Text(
-              "Subir datos a la nube",
-              style: AppleDesignSystem.subheadline.copyWith(
-                color: _palette.textPrimary,
-              ),
-            ),
-            subtitle: Text(
-              "Guardar progreso en tu cuenta",
-              style: AppleDesignSystem.caption2.copyWith(
-                color: _palette.textTertiary,
-              ),
-            ),
-            onTap: _syncDataToFirestore,
-          ),
-          AppleComponents.separator(palette: _palette),
-          ListTile(
-            leading: Icon(
-              LucideIcons.logOut,
-              color: _palette.error,
-              size: 18,
-            ),
-            title: Text(
-              "Cerrar sesión",
-              style: AppleDesignSystem.subheadline.copyWith(
-                color: _palette.error,
-              ),
-            ),
-            onTap: () async {
-              await FirebaseAuth.instance.signOut();
-              setState(() {});
-            },
-          ),
-        ],
-      );
-    }
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        Icon(
-          LucideIcons.userCircle,
-          size: 32,
-          color: _palette.fillSecondary,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          "Inicia sesión para guardar\ntu progreso en la nube",
-          textAlign: TextAlign.center,
-          style: AppleDesignSystem.subheadline.copyWith(
-            color: _palette.textTertiary,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _accentColor,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppleDesignSystem.radiusM),
-                ),
-              ),
-              onPressed: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AuthScreen()),
-                );
-                setState(() {});
-              },
-              child: Text(
-                "INICIAR SESIÓN / REGISTRARSE",
-                style: AppleDesignSystem.caption3.copyWith(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-      ],
-    );
-  }
-
-  Future<bool> _syncDataToFirestore({bool showFeedback = true}) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return false;
-    }
-    if (showFeedback) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Subiendo datos...")));
-    }
-    try {
-      final doc = FirebaseFirestore.instance.collection('users').doc(user.uid);
-      await doc.set({
-        'sessions': _sessions.map((s) => s.toJson()).toList(),
-        'groups': _userGroups,
-        'exerciseDb': _exerciseDb,
-        'templates': _customTemplates,
-        'weeklyPlan': _weeklyPlan,
-        'pinnedNotes': _pinnedNotes,
-        'notes': _exerciseNotes,
-        'emailVerified': user.emailVerified,
-        'lastSync': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-      if (showFeedback && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sincronizado ✓")),
-        );
-      }
-      return true;
-    } catch (e) {
-      if (showFeedback && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al sincronizar: $e")),
-        );
-      }
-      return false;
-    }
-  }
-
-  Future<void> _retryPendingSync() async {
-    final prefs = await SharedPreferences.getInstance();
-    final pending = prefs.getBool('pending_sync') ?? false;
-    if (!pending) return;
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-    final synced = await _syncDataToFirestore(showFeedback: false);
-    if (synced) {
-      await prefs.remove('pending_sync');
-    }
-  }
-
-  Future<void> _loadDataFromFirestore() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return;
-    }
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      if (!doc.exists || doc.data() == null) {
-        return;
-      }
-      final data = doc.data()!;
-      if (data['sessions'] == null && data['groups'] == null) {
-        return;
-      }
-
-      // No sobrescribir los datos locales del dispositivo (evita "volver atrás")
-      final prefs = await SharedPreferences.getInstance();
-      final localSessions = prefs.getString('trainer_sessions');
-      final localConfig = prefs.getString('trainer_config');
-      final hasLocalData =
-          (localSessions != null && localSessions != '[]') ||
-          (localConfig != null && localConfig.contains('"groups"'));
-      if (hasLocalData) {
-        return;
-      }
-
-      if (data['sessions'] != null) {
-        await prefs.setString('trainer_sessions', jsonEncode(data['sessions']));
-      }
-      if (data['templates'] != null) {
-        await prefs.setString(
-          'trainer_custom_templates',
-          jsonEncode(data['templates']),
-        );
-      }
-      if (data['notes'] != null) {
-        await prefs.setString('trainer_notes', jsonEncode(data['notes']));
-      }
-      if (data['groups'] != null || data['exerciseDb'] != null) {
-        final configStr = prefs.getString('trainer_config');
-        final config = configStr != null
-            ? jsonDecode(configStr) as Map<String, dynamic>
-            : {};
-        if (data['groups'] != null) {
-          config['groups'] = data['groups'];
-        }
-        if (data['exerciseDb'] != null) {
-          config['exercises'] = data['exerciseDb'];
-        }
-        if (data['weeklyPlan'] != null) {
-          config['weeklyPlan'] = data['weeklyPlan'];
-        }
-        if (data['pinnedNotes'] != null) {
-          config['pinnedNotes'] = data['pinnedNotes'];
-        }
-        await prefs.setString('trainer_config', jsonEncode(config));
-      }
-
-      await _loadData();
-      await _loadNotes();
-
-      if (mounted) {
-        setState(() {});
-      }
-    } catch (e) {
-      debugPrint("Error loading from Firestore: $e");
-    }
   }
 
   // LOGICA IMPORT / EXPORT (Actualizada)
@@ -5720,11 +5481,6 @@ class _MainScreenState extends State<MainScreen>
         ),
       );
       await _saveSessions();
-
-      final synced = await _syncDataToFirestore(showFeedback: false);
-      if (!synced) {
-        await prefs.setBool('pending_sync', true);
-      }
     }
     _clearDraft();
     setState(() {
