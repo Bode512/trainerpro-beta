@@ -26,6 +26,8 @@ class AppleDesignSystem {
   static const double spacing40 = 40;
   static const double spacing48 = 48;
   static const double spacing56 = 56;
+  static const double spacing5 = 5;
+  static const double spacing25 = 25;
   static const double spacing64 = 64;
 
   // ─── BORDER RADIUS ──────────────────────────────────────────────────────
@@ -194,6 +196,10 @@ class AppleDesignSystem {
   static const Curve curveSmooth = Curves.easeOutCubic;
   static const Curve curveSnappy = Curves.easeOutQuart;
   static const Curve curveBounce = Curves.elasticOut;
+
+  // ─── SEMANTIC COLORS ─────────────────────────────────────────────────
+  static const Color greenSuccess = Color(0xFF30D158);
+  static const Color amberGold = Color(0xFFFFD60A);
 }
 
 // ─── THEME PALETTE ──────────────────────────────────────────────────────────

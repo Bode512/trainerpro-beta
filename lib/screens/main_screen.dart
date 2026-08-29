@@ -1655,7 +1655,7 @@ class _MainScreenState extends State<MainScreen>
                 ),
               );
             },
-            child: const Text(
+            child: Text(
               'ELIMINAR',
               style: TextStyle(color: _palette.error),
             ),
@@ -2186,7 +2186,7 @@ class _MainScreenState extends State<MainScreen>
                 spreadRadius: 1,
               ),
               BoxShadow(
-                color: _palette.shadowPrimary,
+                color: _palette.separator,
                 blurRadius: 8,
               ),
             ],
@@ -3370,7 +3370,7 @@ class _MainScreenState extends State<MainScreen>
                               ),
                             );
                           },
-                          child: const Text(
+                          child: Text(
                             "IMPORTAR TODO",
                             style: TextStyle(color: _palette.error),
                           ),
@@ -3495,7 +3495,7 @@ class _MainScreenState extends State<MainScreen>
                     color: _accentColor,
                   ),
                 ),
-                const Text(
+                Text(
                   "1RM Estimado (Epley)",
                   style: TextStyle(color: _palette.textTertiary, fontSize: 10),
                 ),
@@ -3721,7 +3721,7 @@ class _MainScreenState extends State<MainScreen>
                       ),
                     ),
                     trailing: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         LucideIcons.edit2,
                         size: 14,
                         color: _palette.info,
@@ -4091,7 +4091,7 @@ class _MainScreenState extends State<MainScreen>
     final h = double.tryParse(heightCtrl.text) ?? 0;
     final a = int.tryParse(ageCtrl.text) ?? 0;
     if (w <= 0 || h <= 0 || a <= 0) {
-      return const Text(
+      return Text(
         "Completa los datos para ver resultados",
         style: TextStyle(color: _palette.textQuaternary, fontSize: 11),
       );
@@ -4653,7 +4653,7 @@ class _MainScreenState extends State<MainScreen>
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(c),
-              child: const Text(
+              child: Text(
                 'CANCELAR',
                 style: TextStyle(color: _palette.textQuaternary),
               ),
@@ -4703,7 +4703,7 @@ class _MainScreenState extends State<MainScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(c),
-            child: const Text(
+            child: Text(
               'CANCELAR',
               style: TextStyle(color: _palette.textQuaternary),
             ),
@@ -4775,7 +4775,7 @@ class _MainScreenState extends State<MainScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(c),
-            child: const Text(
+            child: Text(
               'CANCELAR',
               style: TextStyle(color: _palette.textQuaternary),
             ),
@@ -4788,7 +4788,7 @@ class _MainScreenState extends State<MainScreen>
               });
               Navigator.pop(c);
             },
-            child: const Text(
+            child: Text(
               'ELIMINAR',
               style: TextStyle(color: _palette.error),
             ),
@@ -5368,7 +5368,6 @@ class _MainScreenState extends State<MainScreen>
                 decoration: AppleComponents.inputDecoration(
                   palette: _palette,
                   hintText: 'OPINIÓN / NOTA DE LA SERIE',
-                  accentColor: _accentColor,
                 ),
               ),
               const SizedBox(height: 10),
@@ -5672,7 +5671,7 @@ class _MainScreenState extends State<MainScreen>
               });
               Navigator.pop(c);
             },
-            child: const Text(
+            child: Text(
               'BORRAR TODO',
               style: TextStyle(color: _palette.error, fontSize: 11),
             ),
@@ -6164,7 +6163,7 @@ class _MainScreenState extends State<MainScreen>
                       getDotPainter: (spot, percent, barData, index) =>
                           FlDotCirclePainter(
                             radius: 3,
-                            color: _palette.background,
+                            color: _palette.scaffoldBg,
                             strokeWidth: 0,
                           ),
                     ),
@@ -6466,7 +6465,6 @@ class _MainScreenState extends State<MainScreen>
                       decoration: AppleComponents.inputDecoration(
                         palette: _palette,
                         hintText: 'Pregunta sobre entrenamiento...',
-                        accentColor: _accentColor,
                       ),
                       onSubmitted: (_) => _sendChatMessage(),
                     ),
@@ -6953,7 +6951,7 @@ class _MainScreenState extends State<MainScreen>
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'AIzaSy...',
-                        hintStyle: const TextStyle(
+                        hintStyle: TextStyle(
                           color: _palette.textQuaternary,
                           fontSize: 12,
                         ),
@@ -6970,7 +6968,7 @@ class _MainScreenState extends State<MainScreen>
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       "Obtén tu clave gratis en aistudio.google.com/api-key",
                       style: TextStyle(color: _palette.textQuaternary, fontSize: 9),
                     ),
@@ -7080,7 +7078,7 @@ class _MainScreenState extends State<MainScreen>
                   ),
                   Flexible(
                     child: _chatConversations.isEmpty
-                        ? const Padding(
+                        ? Padding(
                             padding: EdgeInsets.all(24),
                             child: Text(
                               "No hay conversaciones",
@@ -7150,7 +7148,7 @@ class _MainScreenState extends State<MainScreen>
                                   ),
                                   subtitle: Text(
                                     "$msgCount preguntas",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: _palette.textQuaternary,
                                       fontSize: 10,
                                     ),
@@ -7214,12 +7212,12 @@ class _MainScreenState extends State<MainScreen>
                 },
               ),
               ListTile(
-                leading: const Icon(
+                leading: Icon(
                   LucideIcons.trash2,
                   color: _palette.error,
                   size: 18,
                 ),
-                title: const Text(
+                title: Text(
                   "Eliminar",
                   style: TextStyle(color: _palette.error, fontSize: 14),
                 ),
@@ -7269,7 +7267,7 @@ class _MainScreenState extends State<MainScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(c),
-            child: const Text(
+            child: Text(
               "CANCELAR",
               style: TextStyle(color: _palette.textTertiary),
             ),
@@ -7357,8 +7355,7 @@ class _MainScreenState extends State<MainScreen>
         ),
         decoration: AppleComponents.inputDecoration(
           palette: _palette,
-          labelText: label,
-          accentColor: _accentColor,
+          hintText: label,
         ),
       ),
     );
@@ -7429,7 +7426,7 @@ class _MainScreenState extends State<MainScreen>
                 "Rutina Actual / Completa",
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
-              subtitle: const Text(
+              subtitle: Text(
                 "Comparte toda tu estructura activa",
                 style: TextStyle(color: _palette.textTertiary, fontSize: 10),
               ),
@@ -7444,7 +7441,7 @@ class _MainScreenState extends State<MainScreen>
                 "Rutina Guardada",
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
-              subtitle: const Text(
+              subtitle: Text(
                 "Elige una plantilla de tus guardadas",
                 style: TextStyle(color: _palette.textTertiary, fontSize: 10),
               ),
@@ -7459,7 +7456,7 @@ class _MainScreenState extends State<MainScreen>
                 "Grupo Muscular (Día)",
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
-              subtitle: const Text(
+              subtitle: Text(
                 "Ej: Solo 'Pecho'",
                 style: TextStyle(color: _palette.textTertiary, fontSize: 10),
               ),
@@ -7554,7 +7551,7 @@ class _MainScreenState extends State<MainScreen>
             ),
             ListTile(
               leading: Icon(LucideIcons.list, color: _palette.info),
-              title: const Text(
+              title: Text(
                 "Editar Contenido",
                 style: TextStyle(color: _palette.info, fontSize: 12),
               ),
@@ -7565,7 +7562,7 @@ class _MainScreenState extends State<MainScreen>
             ),
             ListTile(
               leading: Icon(LucideIcons.trash2, color: _palette.error),
-              title: const Text(
+              title: Text(
                 "Eliminar Sesión",
                 style: TextStyle(color: _palette.error, fontSize: 12),
               ),
