@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.veloz.trainerpro"
+    namespace = "com.veloz.trainerprobeta"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.veloz.trainerpro"
+        applicationId = "com.veloz.trainerprobeta"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = 2
