@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'theme/app_theme.dart';
 import 'screens/main_screen.dart';
-import 'screens/auth_screen.dart';
 import 'screens/splash_screen.dart';
 
 class TrainerProApp extends StatefulWidget {
@@ -277,32 +275,9 @@ class _TrainerProAppState extends State<TrainerProApp> {
       theme: _getThemeData(),
       home: _showSplash
           ? SplashScreen(onDone: () => setState(() => _showSplash = false))
-          : StreamBuilder<User?>(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Scaffold(
-                    backgroundColor: palette.scaffoldBg,
-                    body: Center(
-                      child: SizedBox(
-                        width: 28,
-                        height: 28,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: palette.accent,
-                        ),
-                      ),
-                    ),
-                  );
-                }
-                if (snapshot.hasData) {
-                  return MainScreen(
-                    currentTheme: _currentTheme,
-                    onToggleTheme: _cycleTheme,
-                  );
-                }
-                return const AuthScreen();
-              },
+          : MainScreen(
+              currentTheme: _currentTheme,
+              onToggleTheme: _cycleTheme,
             ),
     );
   }
