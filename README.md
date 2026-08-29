@@ -1,4 +1,4 @@
-# Trainer Pro
+# Trainer Pro Beta
 
 ![Dart](https://img.shields.io/badge/language-Dart-0175C2)
 ![Framework](https://img.shields.io/badge/framework-Flutter-02569B)
